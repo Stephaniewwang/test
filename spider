@@ -1,0 +1,10 @@
+#文档爬虫
+import re
+
+f = open('source.txt', 'r')
+html = f.read()
+f.close()
+
+url = re.findall('src="(.*?)" alt', html, re.S)  ＃正则表达式"(.*?)" 注意alt后面要加等号“＝”
+for each in url:
+    print each
