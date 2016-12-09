@@ -8,3 +8,16 @@ f.close()
 url = re.findall('src="(.*?)" alt', html, re.S)  ＃正则表达式"(.*?)" 注意alt后面不要加等号“＝”
 for each in url:
     print each
+
+#Xpath 爬虫
+# encoding : utf-8
+
+from lxml import etree
+import requests
+
+url = requests.get('http://news.china.com/international/1000/20161209/30072752.html')
+url.encoding = 'utf-8'
+selector = etree.HTML(url.text)
+content = selector.xpath('//div[@id="chan_newsDetail"]/p/text()')
+for each in content:
+    print each
