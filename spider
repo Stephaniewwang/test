@@ -10,7 +10,7 @@ for each in url:
     print each
 
 #Xpath 爬虫
-# encoding : utf-8
+# -*-coding:utf8-*-
 
 from lxml import etree
 import requests
