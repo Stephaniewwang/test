@@ -1,14 +1,16 @@
 # -*-coding:utf8-*-
-# 单线程贴吧爬虫
+# 单线程贴吧爬虫,运行时间2.90946602821s
 
 import sys
 import json
+import time
 import requests
 from lxml import etree
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+time1=time.time()
 
 def towrite(content_s):
     f = open('content.txt', 'a')
@@ -27,12 +29,68 @@ def spider(url):
         info['author'] = reply_info['author']['user_id']
         info['date'] = reply_info['content']['date']
         info['content'] = each.xpath('div[@class="d_post_content_main"]/div/cc/div[@class="d_post_content j_d_post_content  clearfix"]/text()')[0]
-        print info['author']
-        print info['date']
-        print info['content']
+        # print info['author']
+        # print info['date']
+        # print info['content']
         towrite(info)
 
 
 for i in range(1, 5):
     url = 'http://tieba.baidu.com/p/4337132292?pn=' + str(i)
     spider(url)
+time2 = time.time()
+print str(time2-time1)
+
+
+
+
+# -*-coding:utf8-*-
+# 并行贴吧爬虫，不明白为什么运行时间更长了。。。晕
+import sys
+import json
+import time
+import requests
+from lxml import etree
+from multiprocessing.dummy import Pool
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+time1=time.time()
+
+def towrite(content_s):
+    f.writelines('用户id  : ' + str(content_s['author']) + '\n')
+    f.writelines('回帖内容 : ' + str(content_s['content']) + '\n')
+    f.writelines('回帖时间 : ' + str(content_s['date']) + '\n')
+
+
+def spider(url):
+    html = requests.get(url)
+    selector = etree.HTML(html.text)
+    content_s = selector.xpath('//div[@class="l_post j_l_post l_post_bright  "]')
+    info = {}
+    for each in content_s:
+        reply_info = json.loads(each.xpath('@data-field')[0])
+        info['author'] = reply_info['author']['user_id']
+        info['date'] = reply_info['content']['date']
+        info['content'] = each.xpath('div[@class="d_post_content_main"]/div/cc/div[@class="d_post_content j_d_post_content  clearfix"]/text()')[0]
+        # print info['author']
+        # print info['date']
+        # print info['content']
+        towrite(info)
+
+urls = []
+for i in range(1, 5):
+    url = 'http://tieba.baidu.com/p/4337132292?pn=' + str(i)
+    urls.append(url)
+
+f = open('content.txt', 'a')
+pool = Pool(2)
+result = map(spider, urls)
+pool.close()
+pool.join()
+f.close()
+
+time2 = time.time()
+print str(time2-time1)
+
