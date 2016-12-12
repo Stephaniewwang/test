@@ -21,3 +21,31 @@ selector = etree.HTML(url.text)
 content = selector.xpath('//div[@id="chan_newsDetail"]/p/text()')
 for each in content:
     print each
+
+
+# -*-coding:utf8-*-
+# 贴吧爬虫
+
+import sys
+import json
+import requests
+from lxml import etree
+from multiprocessing.dummy import Pool
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+url = requests.get('http://tieba.baidu.com/p/4337132292')
+#url.encoding = 'utf-8'
+#print url.text
+selector = etree.HTML(url.text)
+content_s= (selector.xpath('//div[@id="j_p_postlist"]/div[6]'))
+f = open('content.txt','a')
+for each in content_s:
+    info = json.loads(each.xpath('@data-field')[0])     #[0]是什么意思。。。
+    usr_id = info['author']['user_id']
+    date = info['content']['date']
+    content = each.xpath('//div[@id="post_content_83920666016"]/text()')[0]    #[0]
+    f.writelines('用户id:  '+str(usr_id)+'\n')
+    f.writelines('回帖内容: '+str(content)+'\n')
+    f.writelines('回帖日期: '+str(date)+'\n')
+
