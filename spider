@@ -24,7 +24,7 @@ for each in content:
 
 
 # -*-coding:utf8-*-
-# 贴吧爬虫
+# 简易贴吧爬虫
 
 import sys
 import json
